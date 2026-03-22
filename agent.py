@@ -45,7 +45,7 @@ text_summarizer = Agent(
     Do not add extra explanation.
 
     TEXT:
-    {PROMPT}
+    {prompt}
     """,
     tools=[],
     output_key="summary_data"
