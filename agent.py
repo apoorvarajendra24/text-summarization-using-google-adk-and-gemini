@@ -45,7 +45,7 @@ text_summarizer = Agent(
     Do not add extra explanation.
 
     TEXT:
-    {prompt}
+    { PROMPT? }
     """,
     tools=[],
     output_key="summary_data"
@@ -64,8 +64,8 @@ response_formatter = Agent(
     """
 )
 
-# Main Workflow (UNCHANGED STRUCTURE)
-tour_guide_workflow = SequentialAgent(
+# Main Workflow
+text_summarization_workflow = SequentialAgent(
     name="text_summarization_workflow",
     description="Workflow for summarizing user input text.",
     sub_agents=[
@@ -74,4 +74,15 @@ tour_guide_workflow = SequentialAgent(
     ]
 )
 
-root_agent = tour_guide_workflow
+root_agent = Agent(
+    name="root_agent",
+    model=model_name,
+    description="Entry point for the Text Summarization Agent.",
+    instruction="""
+    - Ask the user to provide text that needs to be summarized.
+    - When the user provides input, use the 'add_prompt_to_state' tool to store it.
+    - After storing the input, transfer control to the 'text_summarization_workflow' agent.
+    """,
+    tools=[add_prompt_to_state],
+    sub_agents=[text_summarization_workflow]
+)
